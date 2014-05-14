@@ -52,7 +52,7 @@ robin.stubbs@uleth.ca
     // Frequency to run the interrupt at
     #define TIE 2
     #define TEN 1
-    #define FREQ 50 // in Hertz
+    #define FREQ 90 // in Hertz
     //-----------------------------------------------------------
     // define offsets for 4X4 Tiles
     struct TileOffsets TileOffsets = {
@@ -93,6 +93,8 @@ void setup() {
       pinMode(INTPIN, INPUT);
       digitalWrite(INTPIN, HIGH);
       trellis.begin(0x71, 0x70, 0x73, 0x72);
+      // LED Brightness 
+	  trellis.setBrightness(3); 
      
       // order is important here!! Start with tile address you want to
       // use as the first one, etc.
@@ -101,8 +103,7 @@ void setup() {
 
     
   /// XY init seq SET
-   setRows();
-   
+   setRows();   
    cli();
    sei();
    
@@ -190,17 +191,19 @@ void clearRows() {
           }
       }
   }
- 
-void setRows() {
+// ////////////////////////////////////////////
+  // Brian's XY init seq  
+	  void setRows() {
       for (uint8_t yVal=0; yVal<8; yVal++) {
           xVal=0;
           while (xVal<8) {
+            int LED = XYToTrellis(numKeys, TileOffsets, xVal, yVal);
             if ((unsigned long)(millis() - previousMillis) >= interval) {
-          int LED = XYToTrellis(numKeys, TileOffsets, xVal, yVal);
-          trellis.setLED(LED);
-          trellis.writeDisplay();
-          xVal++;
-          previousMillis = millis();
+			trellis.setLED(LED);
+			trellis.writeDisplay();
+			trellis.setBrightness(xVal);	//Brightness xVal 0-7 brightness  
+			xVal++;
+			previousMillis = millis();
         }
      }
   }
@@ -338,3 +341,4 @@ void loop() {
  }
 
 // eof
+
