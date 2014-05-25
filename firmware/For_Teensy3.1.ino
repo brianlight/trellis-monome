@@ -51,7 +51,10 @@ Adafruit_TrellisSet trellis = Adafruit_TrellisSet(&matrix0, &matrix1, &matrix2, 
 Adafruit_Trellis_XY trellisXY = Adafruit_Trellis_XY();
 
 #define INTPIN A3
-
+    // Frequency to run the interrupt at
+    #define TIE 2
+    #define TEN 1
+    #define FREQ 90 // in Hertz
 
 
 
@@ -96,7 +99,7 @@ void setup()
 
 	// order is important here!! Start with tile address you want to
 	// use as the first one, etc.
-	trellis.begin(0x71, 0x70, 0x73, 0x72);
+        trellis.begin(0x72, 0x73, 0x70, 0x71);
 	setRows();
 	timer_setup();
 	cli();
@@ -136,7 +139,7 @@ int id = 0; // temporary storage for incoming message ID
 int curInt = 15;
 int prevInt = 15;
 
-unsigned long interval = 12; // debounce time CAN BE ALTERED
+unsigned long interval = 16; // debounce time CAN BE ALTERED
 unsigned long previousMillis = 0; // millis() returns an unsigned long.
 
 // These variables are used to handle the tilt messages, and store which ports are currently enabled,
@@ -385,7 +388,6 @@ void checkADCs()
 /// RACS - Send it
 void loop()
 {
-	checkSerial();
 	checkButtons();
 	trellis.writeDisplay();
 // checkTilt();
